@@ -1,9 +1,10 @@
-from app.ui import ui
-import flask
+from flask import Blueprint, current_app, render_template
 import os
 
+bp = Blueprint('ui', __name__)
 
-@ui.route('/',  methods=['GET'])
+
+@bp.route('/',  methods=['GET'])
 def index():
     """
     Delivers the home page of Nginx UI.
@@ -11,6 +12,6 @@ def index():
     :return: Rendered HTML document.
     :rtype: str
     """
-    nginx_path = flask.current_app.config['NGINX_PATH']
+    nginx_path = current_app.config['NGINX_PATH']
     config = [f for f in os.listdir(nginx_path) if os.path.isfile(os.path.join(nginx_path, f))]
-    return flask.render_template('index.html', config=config)
+    return render_template('index.html', config=config)

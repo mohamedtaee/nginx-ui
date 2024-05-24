@@ -1,15 +1,16 @@
-FROM python:3.7-alpine
+FROM python:3.11.2-slim
 
-ADD requirements.txt .
+WORKDIR /app
 
-RUN apk add python3-dev build-base linux-headers pcre-dev && pip install --no-cache-dir -r requirements.txt
+COPY . /app
 
-# adding application files
-ADD . /webapp
+RUN pip install --upgrade pip
 
-# configure path /webapp to HOME-dir
-ENV HOME /webapp
-WORKDIR /webapp
+RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT ["uwsgi"]
-CMD ["--http", "0.0.0.0:8080", "--wsgi-file", "wsgi.py", "--callable", "app", "--processes", "1", "--threads", "8"]
+EXPOSE 8080
+
+ENV FLASK_APP=app
+ENV FLASK_ENV=production
+
+CMD ["gunicorn", "--workers", "1", "--timeout", "5000", "--preload", "--bind", "0.0.0.0:8080", "wsgi:app"]
