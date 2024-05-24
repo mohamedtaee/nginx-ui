@@ -3,10 +3,10 @@ import io
 import os
 import flask
 
-from app.api import api
+bp = flask.Blueprint('api', __name__, url_prefix='/api')
 
 
-@api.route('/config/<name>',  methods=['GET'])
+@bp.route('/config/<name>',  methods=['GET'])
 def get_config(name: str):
     """
     Reads the file with the corresponding name that was passed.
@@ -25,7 +25,7 @@ def get_config(name: str):
     return flask.render_template('config.html', name=name, file=_file), 200
 
 
-@api.route('/config/<name>', methods=['POST'])
+@bp.route('/config/<name>', methods=['POST'])
 def post_config(name: str):
     """
     Accepts the customized configuration and saves it in the configuration file with the supplied name.
@@ -45,7 +45,7 @@ def post_config(name: str):
     return flask.make_response({'success': True}), 200
 
 
-@api.route('/domains', methods=['GET'])
+@bp.route('/domains', methods=['GET'])
 def get_domains():
     """
     Reads all files from the configuration file directory and checks the state of the site configuration.
@@ -83,7 +83,7 @@ def get_domains():
     return flask.render_template('domains.html', sites_available=sites_available, sites_enabled=sites_enabled), 200
 
 
-@api.route('/domain/<name>', methods=['GET'])
+@bp.route('/domain/<name>', methods=['GET'])
 def get_domain(name: str):
     """
     Takes the name of the domain configuration file and
@@ -116,7 +116,7 @@ def get_domain(name: str):
     return flask.render_template('domain.html', name=name, file=_file, enabled=enabled), 200
 
 
-@api.route('/domain/<name>', methods=['POST'])
+@bp.route('/domain/<name>', methods=['POST'])
 def post_domain(name: str):
     """
     Creates the configuration file of the domain.
@@ -141,7 +141,7 @@ def post_domain(name: str):
     return response
 
 
-@api.route('/domain/<name>', methods=['DELETE'])
+@bp.route('/domain/<name>', methods=['DELETE'])
 def delete_domain(name: str):
     """
     Deletes the configuration file of the corresponding domain.
@@ -168,7 +168,7 @@ def delete_domain(name: str):
         return flask.jsonify({'success': False}), 400
 
 
-@api.route('/domain/<name>', methods=['PUT'])
+@bp.route('/domain/<name>', methods=['PUT'])
 def put_domain(name: str):
     """
     Updates the configuration file with the corresponding domain name.
@@ -191,7 +191,7 @@ def put_domain(name: str):
     return flask.make_response({'success': True}), 200
 
 
-@api.route('/domain/<name>/enable', methods=['POST'])
+@bp.route('/domain/<name>/enable', methods=['POST'])
 def enable_domain(name: str):
     """
     Activates the domain in Nginx so that the configuration is applied.

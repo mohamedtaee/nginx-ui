@@ -1,6 +1,6 @@
 version: '3'
 services:
-  nginx-ui:
+  flask-nginx-ui:
     container_name: flask-nginx-ui
     build: .
     image: flask-nginx-ui:latest
