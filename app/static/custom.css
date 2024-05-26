@@ -14,17 +14,92 @@ textarea {
 #main-container {
     margin-top: 5em;
 }
+
 #domain {
     display: none;
 }
 
 @media only screen and (max-width: 666px) {
-  [class*="mobile hidden"],
-  [class*="tablet only"]:not(.mobile),
-  [class*="computer only"]:not(.mobile),
-  [class*="large monitor only"]:not(.mobile),
-  [class*="widescreen monitor only"]:not(.mobile),
-  [class*="or lower hidden"] {
-    display: none !important;
-  }
+    [class*="mobile hidden"],
+    [class*="tablet only"]:not(.mobile),
+    [class*="computer only"]:not(.mobile),
+    [class*="large monitor only"]:not(.mobile),
+    [class*="widescreen monitor only"]:not(.mobile),
+    [class*="or lower hidden"] {
+        display: none !important;
+    }
+}
+
+.status-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-running {
+    background-color: limegreen;
+}
+
+.status-exited {
+    background-color: red;
+}
+
+.status-loading {
+    background-color: orange;
+}
+
+.status-paused {
+    background-color: grey;
+}
+
+.status-black {
+    background-color: black;
+}
+
+.restart-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.restart-button:hover {
+    background-color: #0056b3;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.custom-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+.custom-spinner-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+
+.custom-spinner-lg {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
 }

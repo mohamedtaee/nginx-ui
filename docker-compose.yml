@@ -8,6 +8,7 @@ services:
       - "8080:8080"
     volumes:
       - nginx:/etc/nginx
+      - /var/run/docker.sock:/var/run/docker.sock
 
   nginx:
     container_name: nginx
