@@ -34,7 +34,7 @@ function restartStatusInterval() {
                 nginxStatusCircle.className = 'status-circle status-loading';
             }
         }
-    }, 300);
+    }, 100);
 }
 
 
