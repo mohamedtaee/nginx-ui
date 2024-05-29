@@ -2,11 +2,13 @@ import datetime
 import io
 import os
 import flask
+import platform
+import docker
 
 bp = flask.Blueprint('api', __name__, url_prefix='/api')
 
 
-@bp.route('/config/<name>',  methods=['GET'])
+@bp.route('/config/<name>', methods=['GET'])
 def get_config(name: str):
     """
     Reads the file with the corresponding name that was passed.
@@ -215,3 +217,46 @@ def enable_domain(name: str):
                     os.rename(os.path.join(config_path, _), os.path.join(config_path, _ + '.disabled'))
 
     return flask.make_response({'success': True}), 200
+
+
+def is_rhel():
+    try:
+        with open('/etc/os-release') as f:
+            os_release = f.read()
+        return 'rhel' in os_release.lower()
+    except FileNotFoundError:
+        return False
+
+
+USE_SUDO_PODMAN = is_rhel()
+
+
+def get_docker_client():
+    print("Platform: ", platform.system())
+    if USE_SUDO_PODMAN:
+        base_url = f'unix:///run/user/{os.getuid()}/podman/podman.sock'
+    elif platform.system() == "Windows":
+        base_url = 'npipe:////./pipe/docker_engine'
+    else:
+        base_url = 'unix://var/run/docker.sock'
+    return docker.DockerClient(base_url=base_url)
+
+
+client = get_docker_client()
+
+
+@bp.route('/restart-nginx', methods=['POST'])
+def restart_nginx():
+    try:
+        container = client.containers.get('nginx')
+        container.restart()
+    except Exception as e:
+        return flask.jsonify({"message": f"Error: {e}"}), 500
+    return flask.jsonify({"message": "Nginx container restarted"}), 200
+
+
+@bp.route('/status-nginx', methods=['GET'])
+def status_nginx():
+    container = client.containers.get('nginx')
+    status = container.status
+    return flask.jsonify({"container": "nginx", "status": status}), 200
